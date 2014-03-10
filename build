@@ -1,0 +1,2 @@
+#!/bin/bash
+gcc arc4random.c blowfish.h blowfish.c crypt-blowfish.c
