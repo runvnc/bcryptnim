@@ -338,7 +338,6 @@ int compare_string(const char* s1, const char* s2) {
     int eq = 1;
     int s1_len = strlen(s1);
     int s2_len = strlen(s2);
-    printf("s1 len is %i and s2 len is %i", s1_len, s2_len);
 
     if (s1_len != s2_len) {
         eq = 0;
@@ -358,7 +357,7 @@ int compare_string(const char* s1, const char* s2) {
     return eq;
 }
 
-#if 1
+#if 0
 void
 main()
 {
