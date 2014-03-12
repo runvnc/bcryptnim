@@ -19,6 +19,6 @@ else:
 
 echo "salt is " & salt
 
-echo("Hashed password (to store in database etc.): ", hash("hello",salt))
+echo("Hashed password (to store in database etc.): ", hash("myPaSword2",salt))
 ```
 
