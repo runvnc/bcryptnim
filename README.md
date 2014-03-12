@@ -7,7 +7,8 @@ such as a certain person who must be named.
 
 ### Usage example:
 
-```nimrod import bcrypt
+```nimrod
+import bcrypt
 
 var salt = ""
 
@@ -19,5 +20,6 @@ except:
 
 echo "salt is " & salt
 
-echo("Hashed password (to store in database etc.): ", hash("hello",salt))```
+echo("Hashed password (to store in database etc.): ", hash("hello",salt))
+```
 
