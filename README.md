@@ -8,13 +8,13 @@ such as a certain person who must be named.
 ### Usage example:
 
 ```nimrod
-import bcrypt
+import bcrypt, os
 
 var salt = ""
 
-try:
+if existsFile("salt"):
   salt = readFile("salt")
-except:
+else:
   salt = genSalt(10)
   writeFile("salt", salt)
 
