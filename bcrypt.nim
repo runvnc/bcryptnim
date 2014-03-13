@@ -10,9 +10,9 @@ proc genSalt*(rounds: int8): string =
 
 proc blowfish(key, salt, encrypted: cstring) : int {.cdecl, mydll, importc: "crypt_blowfish".}
 
-proc hash*(key, salt:string): string =
-  var encrypted:string = "                                                                                                            "
-  var ret = blowfish(key, salt, encrypted)
+proc hash*(key, salt:string): string = 
+  var encrypted = newString(60)
+  var ret = blowfish(key, salt, encrypted.cstring)
   var result:string = $encrypted  
   return result
 
@@ -32,7 +32,7 @@ when isMainModule:
   var password = "testPass01%"
   echo("test password is " & password) 
   var hashed = hash(password, salt)
-  echo "bcrypt hashed is " & hashed
+  echo "bcrypt hashed is **" & hashed & "**"
 
   var passMatches = "testPass01%"
   var hashed2 = hash(passMatches, salt)

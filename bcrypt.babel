@@ -1,6 +1,6 @@
 [Package]
 name          = "bcrypt"
-version       = "0.1.0"
+version       = "0.2.0"
 author        = "Jason Livesay"
 description   = "Wraps the bcrypt (blowfish) library for creating encrypted hashes (useful for passwords)"
 license       = "BSD"
