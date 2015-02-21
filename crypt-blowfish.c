@@ -73,7 +73,11 @@
 #include <string.h>
 #include <pwd.h>
 #include "blowfish.h"
+#ifdef __APPLE__
+#include <unistd.h>
+#else
 #include "crypt.h"
+#endif
 
 /* This implementation is adaptable to current computing power.
  * You can have up to 2^31 rounds which should be enough for some
