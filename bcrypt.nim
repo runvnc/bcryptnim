@@ -1,6 +1,6 @@
-{.compile: "arc4random.c".}
-{.compile: "blowfish.c".}
-{.compile: "crypt-blowfish.c".}
+{.compile: "bcrypt/arc4random.c".}
+{.compile: "bcrypt/blowfish.c".}
+{.compile: "bcrypt/crypt-blowfish.c".}
 {.pragma: mydll.}
 
 proc bcrypt_gensalt(rounds: int8): cstring {.cdecl, mydll, importc: "bcrypt_gensalt".}
