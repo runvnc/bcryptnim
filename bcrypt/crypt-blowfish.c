@@ -79,6 +79,57 @@
 #include "crypt.h"
 #endif
 
+/*
+ * arc4random() portability shim.
+ * Modern glibc (2.36+), macOS, and BSDs all provide arc4random in <stdlib.h>.
+ * Musl libc and older glibc do not, so we supply a /dev/urandom fallback.
+ * A build system can override detection with -DHAVE_ARC4RANDOM=1 or =0.
+ */
+#ifndef HAVE_ARC4RANDOM
+#  define HAVE_ARC4RANDOM 0
+#  if defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__) || \
+      defined(__NetBSD__) || defined(__DragonFly__)
+#    undef  HAVE_ARC4RANDOM
+#    define HAVE_ARC4RANDOM 1
+#  elif defined(__GLIBC__) && defined(__GLIBC_PREREQ)
+#    if __GLIBC_PREREQ(2, 36)
+#      undef  HAVE_ARC4RANDOM
+#      define HAVE_ARC4RANDOM 1
+#    endif
+#  endif
+#endif
+
+#if !HAVE_ARC4RANDOM
+#include <fcntl.h>
+#include <unistd.h>
+
+static u_int32_t arc4random(void)
+{
+	static int fd = -1;
+	u_int32_t val;
+	ssize_t n;
+
+	if (fd < 0) {
+		fd = open("/dev/urandom", O_RDONLY | O_CLOEXEC);
+		if (fd < 0) {
+			/* Fallback to less secure method if /dev/urandom unavailable */
+			return (u_int32_t)random();
+		}
+	}
+
+	n = read(fd, &val, sizeof(val));
+	if (n != sizeof(val)) {
+		/* If read fails, close fd and try again next time */
+		close(fd);
+		fd = -1;
+		return (u_int32_t)random();
+	}
+
+	return val;
+}
+#endif /* !HAVE_ARC4RANDOM */
+
+
 /* This implementation is adaptable to current computing power.
  * You can have up to 2^31 rounds which should be enough for some
  * time to come.
