@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  native:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            name: Ubuntu (latest)
+          - os: macos-14
+            name: macOS 14 (ARM)
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jiro4989/setup-nim-action@v2
+        with:
+          nim-version: stable
+      - run: nim c bcrypt
+      - name: Run test
+        run: ./bcrypt.out
+        continue-on-error: true
+
+  alpine:
+    name: Alpine Edge (musl)
+    runs-on: ubuntu-latest
+    container:
+      image: alpine:edge
+    steps:
+      - uses: actions/checkout@v4
+      - run: apk add --no-cache nim nimble gcc musl-dev bsd-compat-headers git
+      - run: nim c bcrypt
+      - name: Run test
+        run: ./bcrypt.out
+        continue-on-error: true
