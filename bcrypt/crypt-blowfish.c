@@ -79,35 +79,6 @@
 #include "crypt.h"
 #endif
 
-/* Musl libc compatibility - arc4random() implementation using /dev/urandom */
-#include <fcntl.h>
-#include <unistd.h>
-
-static u_int32_t arc4random(void)
-{
-	static int fd = -1;
-	u_int32_t val;
-	ssize_t n;
-	
-	if (fd < 0) {
-		fd = open("/dev/urandom", O_RDONLY | O_CLOEXEC);
-		if (fd < 0) {
-			/* Fallback to less secure method if /dev/urandom unavailable */
-			return (u_int32_t)random();
-		}
-	}
-	
-	n = read(fd, &val, sizeof(val));
-	if (n != sizeof(val)) {
-		/* If read fails, close fd and try again next time */
-		close(fd);
-		fd = -1;
-		return (u_int32_t)random();
-	}
-	
-	return val;
-}
-
 /* This implementation is adaptable to current computing power.
  * You can have up to 2^31 rounds which should be enough for some
  * time to come.
